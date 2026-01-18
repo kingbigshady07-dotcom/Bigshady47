@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShadyCreation | Digital Agency</title>
+    
+    <!-- Tailwind CSS (Styling) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome (Icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .service-card { transition: all 0.3s ease; }
+        .service-card:hover { transform: translateY(-5px); border-color: #eab308; }
+        .modal { transition: opacity 0.3s ease; }
+        .hidden-modal { pointer-events: none; opacity: 0; }
+        .visible-modal { pointer-events: auto; opacity: 1; }
+        
+        /* Custom Scrollbar for dropdowns */
+        .custom-select option {
+            background-color: #111827; /* dark bg */
+            color: white;
+            padding: 10px;
+        }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        yellow: {
+                            400: '#facc15',
+                            500: '#eab308',
+                            600: '#ca8a04',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-black text-white selection:bg-yellow-500 selection:text-black">
+
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-40 transition-all duration-300 py-6">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <a href="#" class="text-2xl font-black tracking-tighter flex items-center gap-2">
+                <span class="text-yellow-500 text-3xl">⚡</span> SHADY<span class="text-yellow-500">CREATION</span>
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#services" class="text-gray-300 hover:text-yellow-500 font-medium transition-colors">Services</a>
+                <a href="#gallery" class="text-gray-300 hover:text-yellow-500 font-medium transition-colors">Gallery</a>
+                <a href="#contact" class="text-gray-300 hover:text-yellow-500 font-medium transition-colors">Contact</a>
+                
+                <!-- Admin Login Button (Visible to all, accessible only by you) -->
+                <button onclick="toggleModal('adminLoginModal')" class="px-5 py-2 rounded-full border border-gray-800 hover:border-yellow-500 text-gray-400 hover:text-yellow-500 font-medium transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-lock"></i>
+                    <span>Staff Login</span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button onclick="toggleMobileMenu()" class="md:hidden text-white text-2xl">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobileMenu" class="hidden absolute top-full left-0 w-full bg-gray-900 border-b border-gray-800 p-6 flex-col gap-6 shadow-2xl">
+            <a href="#services" class="text-white text-lg block">Services</a>
+            <a href="#gallery" class="text-white text-lg block">Gallery</a>
+            <a href="#contact" class="text-white text-lg block">Contact</a>
+            <button onclick="toggleModal('adminLoginModal')" class="text-left text-gray-400 hover:text-yellow-500 font-bold flex items-center gap-2">
+                <i class="fa-solid fa-lock"></i> Staff Login
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-yellow-500/10 to-transparent pointer-events-none"></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-4xl">
+                <div class="inline-block px-4 py-1 mb-6 rounded-full border border-yellow-500/50 text-yellow-500 text-sm font-bold bg-yellow-500/10 backdrop-blur-sm">
+                    CREATIVE DIGITAL AGENCY
+                </div>
+                <h1 class="text-5xl md:text-7xl font-black leading-tight mb-8 text-white">
+                    We Craft <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">Visuals</span> & <br />
+                    Code The <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600">Future</span>.
+                </h1>
+                <p class="text-xl text-gray-400 mb-10 max-w-2xl leading-relaxed">
+                    From high-end retouching and cinematic video production to custom web development and app creation. ShadyCreation is your all-in-one digital partner.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#services" class="px-8 py-4 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition-colors text-center">
+                        Explore Services
+                    </a>
+                    <a href="#contact" class="px-8 py-4 bg-gray-800 text-white font-bold rounded-lg hover:bg-gray-700 transition-colors text-center border border-gray-700">
+                        Get in Touch
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 bg-gray-950">
+        <div class="container mx-auto px-6">
+            <div class="mb-12 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 uppercase tracking-wider">Our Expertise</h2>
+                <div class="h-1 w-24 bg-yellow-500 mx-auto rounded-full mb-4"></div>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="flex flex-wrap justify-center gap-4 mb-12">
+                <button onclick="filterServices('all')" class="filter-btn px-6 py-3 rounded-full font-medium transition-all bg-white text-black" data-filter="all">All Services</button>
+                <button onclick="filterServices('photo')" class="filter-btn px-6 py-3 rounded-full font-medium transition-all bg-gray-900 text-gray-400 hover:bg-gray-800" data-filter="photo">Photography</button>
+                <button onclick="filterServices('video')" class="filter-btn px-6 py-3 rounded-full font-medium transition-all bg-gray-900 text-gray-400 hover:bg-gray-800" data-filter="video">Video</button>
+                <button onclick="filterServices('tech')" class="filter-btn px-6 py-3 rounded-full font-medium transition-all bg-gray-900 text-gray-400 hover:bg-gray-800" data-filter="tech">Development</button>
+            </div>
+
+            <!-- Service Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" id="serviceGrid">
+                
+                <!-- Photography Items -->
+                <div class="service-card bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden group" data-category="photo">
+                    <div class="text-yellow-500 mb-4 text-2xl"><i class="fa-solid fa-camera"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-2">Picture Editing</h3>
+                    <div class="flex items-baseline mb-4">
+                        <span class="text-2xl font-bold text-white">$5</span>
+                        <span class="text-sm text-gray-500 ml-2">/ per picture</span>
+                    </div>
+                    <!-- Upload Required = true -->
+                    <button onclick="openOrderModal('Picture Editing', 5, 'per picture', true)" class="w-full py-2 rounded-lg bg-gray-800 text-white font-medium hover:bg-yellow-500 hover:text-black transition-colors">Order Now</button>
+                </div>
+
+                <div class="service-card bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden group" data-category="photo">
+                    <div class="text-yellow-500 mb-4 text-2xl"><i class="fa-solid fa-sliders"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-2">Presets & LUTs</h3>
+                    <div class="flex items-baseline mb-4">
+                        <span class="text-2xl font-bold text-white">$25</span>
+                        <span class="text-sm text-gray-500 ml-2">/ bundle</span>
+                    </div>
+                    <button onclick="openOrderModal('Presets & LUTs', 25, 'bundle', true)" class="w-full py-2 rounded-lg bg-gray-800 text-white font-medium hover:bg-yellow-500 hover:text-black transition-colors">Order Now</button>
+                </div>
+
+                <!-- Video Items -->
+                <div class="service-card bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden group" data-category="video">
+                    <div class="text-yellow-500 mb-4 text-2xl"><i class="fa-solid fa-film"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-2">Video Shot Reels</h3>
+                    <div class="flex items-baseline mb-4">
+                        <span class="text-2xl font-bold text-white">$70</span>
+                        <span class="text-sm text-gray-500 ml-2">/ per reel</span>
+                    </div>
+                    <button onclick="openOrderModal('Video Shot Reels', 70, 'per reel', true)" class="w-full py-2 rounded-lg bg-gray-800 text-white font-medium hover:bg-yellow-500 hover:text-black transition-colors">Order Now</button>
+                </div>
+
+                <div class="service-card bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden group" data-category="video">
+                    <div class="text-yellow-500 mb-4 text-2xl"><i class="fa-solid fa-bullhorn"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-2">Video Ads</h3>
+                    <div class="flex items-baseline mb-4">
+                        <span class="text-2xl font-bold text-white">$75</span>
+                        <span class="text-sm text-gray-500 ml-2">/ per ad</span>
+                    </div>
+                    <button onclick="openOrderModal('Video Ads', 75, 'per ad', true)" class="w-full py-2 rounded-lg bg-gray-800 text-white font-medium hover:bg-yellow-500 hover:text-black transition-colors">Order Now</button>
+                </div>
+                
+                <div class="service-card bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden group" data-category="video">
+                    <div class="text-yellow-500 mb-4 text-2xl"><i class="fa-solid fa-video"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-2">Presentation Video</h3>
+                    <div class="flex items-baseline mb-4">
+                        <span class="text-2xl font-bold text-white">$120</span>
+                        <span class="text-sm text-gray-500 ml-2">/ per video</span>
+                    </div>
+                    <button onclick="openOrderModal('Presentation Video', 120, 'per video', true)" class="w-full py-2 rounded-lg bg-gray-800 text-white font-medium hover:bg-yellow-500 hover:text-black transition-colors">Order Now</button>
+                </div>
+
+                <div class="service-card bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden group" data-category="video">
+                    <div class="text-yellow-500 mb-4 text-2xl"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-2">Animation</h3>
+                    <div class="flex items-baseline mb-4">
+                        <span class="text-2xl font-bold text-white">$200</span>
+                        <span class="text-sm text-gray-500 ml-2">/ project</span>
+                    </div>
+                    <button onclick="openOrderModal('Animation', 200, 'project', true)" class="w-full py-2 rounded-lg bg-gray-800 text-white font-medium hover:bg-yellow-500 hover:text-black transition-colors">Order Now</button>
+                </div>
+
+                <!-- Tech Items -->
+                <div class="service-card bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden group" data-category="tech">
+                    <div class="text-yellow-500 mb-4 text-2xl"><i class="fa-solid fa-code"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-2">Web Designing</h3>
+                    <div class="flex items-baseline mb-4">
+                        <span class="text-2xl font-bold text-white">$100</span>
+                        <span class="text-sm text-gray-500 ml-2">/ base</span>
+                    </div>
+                    <button onclick="openOrderModal('Web Designing', 100, 'base', true)" class="w-full py-2 rounded-lg bg-gray-800 text-white font-medium hover:bg-yellow-500 hover:text-black transition-colors">Order Now</button>
+                </div>
+
+                <div class="service-card bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden group" data-category="tech">
+                    <div class="text-yellow-500 mb-4 text-2xl"><i class="fa-solid fa-laptop-code"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-2">Web Development</h3>
+                    <div class="flex items-baseline mb-4">
+                        <span class="text-2xl font-bold text-white">$130</span>
+                        <span class="text-sm text-gray-500 ml-2">/ standard</span>
+                    </div>
+                    <button onclick="openOrderModal('Web Development', 130, 'standard', true)" class="w-full py-2 rounded-lg bg-gray-800 text-white font-medium hover:bg-yellow-500 hover:text-black transition-colors">Order Now</button>
+                </div>
+
+                <!-- SITE CREATION: Upload Required = false -->
+                <div class="service-card bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden group" data-category="tech">
+                    <div class="text-yellow-500 mb-4 text-2xl"><i class="fa-solid fa-globe"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-2">Site Creation</h3>
+                    <div class="flex items-baseline mb-4">
+                        <span class="text-2xl font-bold text-white">$700</span>
+                        <span class="text-sm text-gray-500 ml-2">/ full suite</span>
+                    </div>
+                    <button onclick="openOrderModal('Site Creation', 700, 'full suite', false)" class="w-full py-2 rounded-lg bg-gray-800 text-white font-medium hover:bg-yellow-500 hover:text-black transition-colors">Order Now</button>
+                </div>
+
+                <!-- APP BUILDING: Upload Required = false -->
+                <div class="service-card bg-gray-900 border border-gray-800 rounded-xl p-6 relative overflow-hidden group" data-category="tech">
+                    <div class="text-yellow-500 mb-4 text-2xl"><i class="fa-solid fa-mobile-screen"></i></div>
+                    <h3 class="text-xl font-bold text-white mb-2">App Building</h3>
+                    <div class="flex items-baseline mb-4">
+                        <span class="text-2xl font-bold text-white">$1200</span>
+                        <span class="text-sm text-gray-500 ml-2">/ native</span>
+                    </div>
+                    <button onclick="openOrderModal('App Building', 1200, 'native', false)" class="w-full py-2 rounded-lg bg-gray-800 text-white font-medium hover:bg-yellow-500 hover:text-black transition-colors">Order Now</button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="gallery" class="py-20 bg-black">
+        <div class="container mx-auto px-6">
+            <div class="mb-12 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-4 uppercase tracking-wider">Portfolio</h2>
+                <div class="h-1 w-24 bg-yellow-500 mx-auto rounded-full mb-4"></div>
+            </div>
+            
+            <div class="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+                <!-- Gallery Images -->
+                <div class="break-inside-avoid rounded-xl overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
+                    <img src="1098775.jpg" alt="Gallery Image" class="w-full h-auto">
+                </div>
+                <div class="break-inside-avoid rounded-xl overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
+                    <img src="1098778.jpg" alt="Gallery Image" class="w-full h-auto">
+                </div>
+                <div class="break-inside-avoid rounded-xl overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
+                    <img src="1098774.jpg" alt="Gallery Image" class="w-full h-auto">
+                </div>
+                <div class="break-inside-avoid rounded-xl overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
+                    <img src="1098773.jpg" alt="Gallery Image" class="w-full h-auto">
+                </div>
+                <div class="break-inside-avoid rounded-xl overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
+                    <img src="1098777.jpg" alt="Gallery Image" class="w-full h-auto">
+                </div>
+                <div class="break-inside-avoid rounded-xl overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
+                    <img src="1098772.jpg" alt="Gallery Image" class="w-full h-auto">
+                </div>
+                <div class="break-inside-avoid rounded-xl overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
+                    <img src="1098776.jpg" alt="Gallery Image" class="w-full h-auto">
+                </div>
+                <div class="break-inside-avoid rounded-xl overflow-hidden cursor-pointer hover:opacity-90 transition-opacity">
+                    <img src="1098779.jpg" alt="Gallery Image" class="w-full h-auto">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Earnings Banner (Public View) -->
+    <section class="py-16 bg-gradient-to-r from-yellow-600 to-yellow-500">
+        <div class="container mx-auto px-6 text-center text-black">
+            <h2 class="text-3xl md:text-4xl font-black mb-4">Earn While You Create</h2>
+            <p class="text-lg md:text-xl font-medium max-w-2xl mx-auto mb-8 opacity-90">
+                Join our network. Contact admin to become a partner.
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-4xl font-bold text-white mb-6">Ready to Start?</h2>
+                    <p class="text-gray-400 mb-8 text-lg">
+                        Whether you need a photoshoot, a video ad, or a custom app, our team is ready to deliver excellence.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-yellow-500 shrink-0 text-xl">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold mb-1">Call Us</h4>
+                                <p class="text-gray-400">+23470477198</p>
+                                <p class="text-gray-400">08114755439</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-green-500 shrink-0 text-xl">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold mb-1">WhatsApp</h4>
+                                <p class="text-gray-400">+2347047277198</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-blue-500 shrink-0 text-xl">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold mb-1">Email</h4>
+                                <p class="text-gray-400">shadycreation07@gmail.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-black p-8 rounded-2xl border border-gray-800">
+                    <h3 class="text-2xl font-bold text-white mb-6">Send a Message</h3>
+                    <form class="space-y-4">
+                        <input type="text" placeholder="Your Name" class="w-full bg-gray-900 border border-gray-800 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-yellow-500 transition-colors">
+                        <input type="email" placeholder="Email Address" class="w-full bg-gray-900 border border-gray-800 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-yellow-500 transition-colors">
+                        <textarea rows="4" placeholder="Tell us about your project..." class="w-full bg-gray-900 border border-gray-800 text-white px-4 py-3 rounded-lg focus:outline-none focus:border-yellow-500 transition-colors"></textarea>
+                        <button type="button" class="w-full bg-yellow-500 text-black font-bold py-4 rounded-lg hover:bg-yellow-400 transition-colors">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 bg-black border-t border-gray-900 text-center text-gray-500 text-sm">
+        <p>© 2024 ShadyCreation. All rights reserved.</p>
+    </footer>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="hidden-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm modal">
+        <div class="bg-gray-900 rounded-2xl w-full max-w-sm border border-gray-700 shadow-2xl overflow-hidden relative p-6 text-center">
+            <button onclick="toggleModal('adminLoginModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
+            <div class="mb-6 mt-2">
+                <i class="fa-solid fa-user-shield text-5xl text-yellow-500 mb-4"></i>
+                <h3 class="text-xl font-bold text-white">Owner Access</h3>
+                <p class="text-gray-400 text-sm">Enter security PIN to access wallet.</p>
+            </div>
+            
+            <!-- Updated Placeholder -->
+            <input type="password" id="adminPinInput" placeholder="Enter Security PIN" class="w-full bg-gray-800 border border-gray-700 text-white text-center text-2xl tracking-widest rounded-lg p-3 focus:outline-none focus:border-yellow-500 mb-4">
+            
+            <button onclick="checkAdminPin()" class="w-full py-3 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition-colors">
+                Access Dashboard
+            </button>
+            <p id="pinError" class="text-red-500 text-xs mt-3 hidden">Incorrect PIN provided.</p>
+        </div>
+    </div>
+
+    <!-- Wallet Modal (Hidden until PIN is correct) -->
+    <div id="walletModal" class="hidden-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm modal">
+        <div class="bg-gray-900 rounded-2xl w-full max-w-md border border-yellow-500/30 shadow-2xl overflow-hidden relative">
+            <button onclick="toggleModal('walletModal')" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fa-solid fa-times text-xl"></i></button>
+            <div class="p-6 bg-gradient-to-br from-gray-900 to-gray-800">
+                <h3 class="text-xl font-bold text-white flex items-center gap-2 mb-6">
+                    <i class="fa-solid fa-wallet text-yellow-500"></i> Owner Wallet
+                </h3>
+                
+                <div class="bg-black/40 rounded-xl p-6 mb-6 border border-gray-700 text-center">
+                    <p class="text-gray-400 text-sm mb-1">Total Earnings</p>
+                    <h2 class="text-4xl font-bold text-white" id="modal-balance">$1,240.00</h2>
+                    <p class="text-xs text-green-400 mt-2 flex items-center justify-center gap-1">
+                        <i class="fa-solid fa-check-circle"></i> Funds Available
+                    </p>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Withdraw Method</label>
+                        <select class="w-full bg-gray-800 border border-gray-700 text-white rounded-lg p-3 focus:outline-none focus:border-yellow-500 custom-select">
+                            <option value="">Select Bank / Wallet</option>
+                            <optgroup label="Popular Wallets">
+                                <option value="chipper">Chipper Cash</option>
+                                <option value="clever">Clever Wallet</option>
+                                <option value="opay">OPay</option>
+                                <option value="palmpay">PalmPay</option>
+                            </optgroup>
+                            <optgroup label="Nigerian Banks">
+                                <option value="gtb">GTBank</option>
+                                <option value="zenith">Zenith Bank</option>
+                                <option value="firstbank">First Bank</option>
+                                <option value="uba">UBA</option>
+                                <option value="access">Access Bank</option>
+                                <option value="kuda">Kuda Bank</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div>
+                        <input type="text" id="accountNumber" placeholder="Account Number / Wallet Address" class="w-full bg-gray-800 border border-gray-700 text-white rounded-lg p-3 focus:outline-none focus:border-yellow-500">
+                    </div>
+                    
+                    <!-- Name Verification Section -->
+                    <div class="flex gap-2">
+                        <button onclick="verifyAccountName()" class="w-1/3 py-2 bg-gray-700 text-white text-xs font-bold rounded-lg hover:bg-gray-600 transition-colors">
+                            Verify Name
+                        </button>
+                        <div class="w-2/3 bg-gray-950 border border-gray-800 rounded-lg p-2 flex items-center justify-center">
+                            <span id="accountNameDisplay" class="text-gray-500 text-xs italic">Name hidden...</span>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-3 bg-yellow-500 text-black font-bold rounded-lg hover:bg-yellow-400 transition-colors mt-2">
+                        Process Withdrawal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Modal -->
+    <div id="orderModal" class="hidden-modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm modal">
+        <div class="bg-gray-900 rounded-2xl w-full max-w-lg border border-gray-700 shadow-2xl relative overflow-hidden">
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center bg-gray-900/50">
+                <div>
+                    <h3 class="text-xl font-bold text-white" id="order-title">Service Title</h3>
+                    <div class="flex items-baseline gap-2">
+                        <p class="text-yellow-500 font-bold text-lg" id="price-display">$<span id="order-price">0</span></p>
+                        <span class="text-gray-500 text-sm font-normal" id="order-unit">/ unit</span>
+                    </div>
+                </div>
+                <button onclick="closeOrderModal()" class="text-gray-400 hover:text-white p-2 hover:bg-gray-800 rounded-full transition-colors">
+                    <i class="fa-solid fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body (Step 1 - Upload) -->
+            <div id="order-step-1" class="p-6">
+                <div class="border-2 border-dashed border-gray-700 rounded-xl p-8 text-center bg-gray-950 mb-6">
+                    <i class="fa-solid fa-cloud-arrow-up text-4xl text-gray-500 mb-4"></i>
+                    <h4 class="text-white font-medium mb-2">Upload your files</h4>
+                    <p class="text-sm text-gray-400 mb-4">Drag and drop or browse files</p>
+                    <label class="inline-block cursor-pointer bg-gray-800 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition-colors text-sm">
+                        <span>Browse Files</span>
+                        <input type="file" class="hidden" onchange="fileUploaded(this)">
+                    </label>
+                    <div id="file-name" class="mt-4 text-green-400 text-sm hidden"></div>
+                </div>
+                <button id="btn-continue" onclick="goToPayment()" disabled class="w-full py-4 rounded-xl font-bold text-lg bg-gray-800 text-gray-500 cursor-not-allowed transition-all">
+                    Continue to Payment
+                </button>
+            </div>
+
+            <!-- Modal Body (Step 2 - Payment) -->
+            <div id="order-step-2" class="p-6 hidden">
+                
+                <!-- Currency Switcher -->
+                <div class="flex justify-center mb-6">
+                    <div class="bg-gray-800 p-1 rounded-lg flex">
+                        <button onclick="setCurrency('USD')" id="btn-usd" class="px-6 py-2 rounded-md font-bold text-sm bg-yellow-500 text-black transition-all">USD ($)</button>
+                        <button onclick="setCurrency('NGN')" id="btn-ngn" class="px-6 py-2 rounded-md font-bold text-sm text-gray-400 hover:text-white transition-all">NGN (₦)</button>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-lg mb-6">
+                    <p class="text-yellow-200 text-sm flex gap-2 items-center">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>Secure payment is required before starting.</span>
+                    </p>
+                </div>
+
+                <div class="grid gap-4 mb-6">
+                    <button class="p-4 bg-gray-800 border border-gray-700 rounded-xl hover:border-yellow-500 transition-colors flex items-center justify-between group">
+                        <div class="text-left">
+                            <span class="block text-gray-400 text-xs mb-1">Credit / Debit Card</span>
+                            <span class="block text-white font-bold group-hover:text-yellow-500">Pay with Card</span>
+                        </div>
+                        <div class="flex gap-2 text-gray-400 text-xl">
+                            <i class="fa-brands fa-cc-visa"></i>
+                            <i class="fa-brands fa-cc-mastercard"></i>
+                        </div>
+                    </button>
+                    
+                    <button class="p-4 bg-gray-800 border border-gray-700 rounded-xl hover:border-yellow-500 transition-colors text-left group">
+                        <span class="block text-gray-400 text-xs mb-1">Other Methods</span>
+                        <span class="block text-white font-bold group-hover:text-yellow-500">Bank Transfer / USSD</span>
+                    </button>
+                </div>
+
+                <div class="text-center bg-gray-950 p-4 rounded-xl border border-gray-800">
+                    <p class="text-gray-400 text-sm mb-2">Having issues paying?</p>
+                    <a href="https://wa.me/2347047277198" target="_blank" class="text-yellow-500 hover:text-yellow-400 font-medium text-sm flex items-center justify-center gap-2">
+                        <i class="fa-brands fa-whatsapp"></i> Contact Admin Directly
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Data & Variables
+        let currentBasePriceUSD = 0;
+        let exchangeRate = 1600; // Simulated Exchange Rate: $1 = 1600 NGN
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-black/90', 'backdrop-blur-md', 'border-b', 'border-gray-800', 'py-4');
+                navbar.classList.remove('py-6');
+            } else {
+                navbar.classList.remove('bg-black/90', 'backdrop-blur-md', 'border-b', 'border-gray-800', 'py-4');
+                navbar.classList.add('py-6');
+            }
+        });
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+            menu.classList.toggle('flex');
+        }
+
+        // Modal Logic
+        function toggleModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal.classList.contains('hidden-modal')) {
+                modal.classList.remove('hidden-modal');
+                modal.classList.add('visible-modal');
+            } else {
+                modal.classList.add('hidden-modal');
+                modal.classList.remove('visible-modal');
+            }
+        }
+
+        // --- NEW: Admin Login Logic ---
+        function checkAdminPin() {
+            const pin = document.getElementById('adminPinInput').value;
+            const errorMsg = document.getElementById('pinError');
+            
+            // Updated Security PIN
+            if (pin === "077447") {
+                toggleModal('adminLoginModal'); // Close login
+                toggleModal('walletModal');     // Open wallet
+                document.getElementById('adminPinInput').value = ""; // Clear Input
+                errorMsg.classList.add('hidden');
+            } else {
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        // --- NEW: Name Verification Logic ---
+        function verifyAccountName() {
+            const accNum = document.getElementById('accountNumber').value;
+            const display = document.getElementById('accountNameDisplay');
+            
+            if (accNum.length < 5) {
+                alert("Please enter a valid account number first.");
+                return;
+            }
+
+            display.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking...';
+            display.classList.remove('text-gray-500', 'italic');
+            display.classList.add('text-yellow-500', 'font-bold');
+
+            // Simulate API delay
+            setTimeout(() => {
+                display.classList.remove('text-yellow-500');
+                display.classList.add('text-green-400');
+                display.innerHTML = '<i class="fa-solid fa-check-circle"></i> SHADY CREATION USER';
+            }, 1500);
+        }
+
+        // Service Filtering
+        function filterServices(category) {
+            const cards = document.querySelectorAll('.service-card');
+            const btns = document.querySelectorAll('.filter-btn');
+
+            btns.forEach(btn => {
+                if(btn.dataset.filter === category) {
+                    btn.classList.remove('bg-gray-900', 'text-gray-400');
+                    btn.classList.add('bg-white', 'text-black');
+                } else {
+                    btn.classList.add('bg-gray-900', 'text-gray-400');
+                    btn.classList.remove('bg-white', 'text-black');
+                }
+            });
+
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Order Logic
+        function openOrderModal(title, priceUSD, unit, requiresUpload = true) {
+            currentBasePriceUSD = priceUSD;
+            document.getElementById('order-title').innerText = title;
+            document.getElementById('order-unit').innerText = '/ ' + unit;
+            
+            // Reset to USD default
+            setCurrency('USD');
+            
+            if (requiresUpload) {
+                // Normal Logic (File Upload -> Payment)
+                document.getElementById('order-step-1').classList.remove('hidden');
+                document.getElementById('order-step-2').classList.add('hidden');
+                document.getElementById('file-name').classList.add('hidden');
+                document.getElementById('btn-continue').disabled = true;
+                document.getElementById('btn-continue').classList.add('bg-gray-800', 'text-gray-500', 'cursor-not-allowed');
+                document.getElementById('btn-continue').classList.remove('bg-yellow-500', 'text-black');
+            } else {
+                // Skip Upload Logic (For Site Creation/Apps)
+                document.getElementById('order-step-1').classList.add('hidden');
+                document.getElementById('order-step-2').classList.remove('hidden');
+            }
+
+            toggleModal('orderModal');
+        }
+
+        function closeOrderModal() {
+            toggleModal('orderModal');
+        }
+
+        function fileUploaded(input) {
+            if (input.files && input.files[0]) {
+                const fileNameDiv = document.getElementById('file-name');
+                const btn = document.getElementById('btn-continue');
+                
+                fileNameDiv.innerText = "File selected: " + input.files[0].name;
+                fileNameDiv.classList.remove('hidden');
+                
+                btn.disabled = false;
+                btn.classList.remove('bg-gray-800', 'text-gray-500', 'cursor-not-allowed');
+                btn.classList.add('bg-yellow-500', 'text-black');
+            }
+        }
+
+        function goToPayment() {
+            document.getElementById('order-step-1').classList.add('hidden');
+            document.getElementById('order-step-2').classList.remove('hidden');
+        }
+
+        // Currency Toggle Logic
+        function setCurrency(currency) {
+            const priceEl = document.getElementById('order-price');
+            const displayEl = document.getElementById('price-display');
+            const btnUsd = document.getElementById('btn-usd');
+            const btnNgn = document.getElementById('btn-ngn');
+
+            if (currency === 'USD') {
+                priceEl.innerText = currentBasePriceUSD;
+                displayEl.innerHTML = $<span id="order-price">${currentBasePriceUSD}</span>;
+                
+                btnUsd.classList.add('bg-yellow-500', 'text-black');
+                btnUsd.classList.remove('text-gray-400');
+                btnNgn.classList.remove('bg-yellow-500', 'text-black');
+                btnNgn.classList.add('text-gray-400');
+            } else {
+                const priceNGN = (currentBasePriceUSD * exchangeRate).toLocaleString();
+                displayEl.innerHTML = ₦<span id="order-price">${priceNGN}</span>;
+                
+                btnNgn.classList.add('bg-yellow-500', 'text-black');
+                btnNgn.classList.remove('text-gray-400');
+                btnUsd.classList.remove('bg-yellow-500', 'text-black');
+                btnUsd.classList.add('text-gray-400');
+            }
+        }
+    </script>
+</body>
+</html>
